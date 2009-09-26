@@ -20,6 +20,8 @@ module Formtastic #:nodoc:
     @@file_methods = [ :file?, :public_filename ]
     @@priority_countries = ["Australia", "Canada", "United Kingdom", "United States"]
     @@i18n_lookups_by_default = false
+    @@inputs_class = 'inputs'
+    @@buttons_class = 'buttons'
 
     cattr_accessor :default_text_field_size, :all_fields_required_by_default, :required_string,
                    :optional_string, :inline_errors, :label_str_method, :collection_label_methods,
@@ -244,7 +246,7 @@ module Formtastic #:nodoc:
     #
     def inputs(*args, &block)
       html_options = args.extract_options!
-      html_options[:class] ||= "inputs"
+      html_options[:class] ||= @@inputs_class
 
       if html_options[:for]
         inputs_for_nested_attributes(args, html_options, &block)
@@ -271,7 +273,7 @@ module Formtastic #:nodoc:
     # See inputs for html attributes and special options.
     def buttons(*args, &block)
       html_options = args.extract_options!
-      html_options[:class] ||= "buttons"
+      html_options[:class] ||= @@buttons_class
 
       if block_given?
         field_set_and_list_wrapping(html_options, &block)
@@ -1284,6 +1286,7 @@ module Formtastic #:nodoc:
   # has too many dependencies on an ActiveRecord object being present.
   #
   module SemanticFormHelper
+    @@form_class = 'formtastic'
     @@builder = Formtastic::SemanticFormBuilder
     mattr_accessor :builder
 
@@ -1295,7 +1298,7 @@ module Formtastic #:nodoc:
           options[:html] ||= {}
 
           class_names = options[:html][:class] ? options[:html][:class].split(" ") : []
-          class_names << "formtastic"
+          class_names << @@form_class
           class_names << case record_or_name_or_array
             when String, Symbol then record_or_name_or_array.to_s               # :post => "post"
             when Array then record_or_name_or_array.last.class.to_s.underscore  # [@post, @comment] # => "comment"
